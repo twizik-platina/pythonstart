@@ -1,133 +1,189 @@
 from dataclasses import dataclass
 
-# сущность:
-#     МобильныйТелефон
-# поля:
-#     ИД - целое уникальное число
-#     Марка - строка (макс 10 символов)
-#     Модель - строка (макс 15 символов)
-#     Вес - целое число
-#     Диагональ экрана - дробное число
-#     Ёмкость аккумултора - целое число
-#     Состояние - строка (макс 10 символов)
-#     Цена - целое число
-#     Количество на складе - целое число
-
-
 @dataclass
-class MobilePhone:
+class Computer:
     id: int
-    brand: str
-    model: str
+    manufacturer: str
+    processor: str
+    video_card: str
+    ram: int
+    ssd: int
     weight: int
-    screen_diagonal: float
-    battery: int
-    status: str
     price: int
     amount: int
 
-
-GLOBAL_MOBILE_PHONE_ID = 0
-
-# действия пользователя в программе
-
-# 1) искать Мобильные телефоны по:
-#     ИД
-#     Марка
-#     Цена
-#     Состояние
-
-# 2) сортировать Мобильные телефоны по:
-#     ИД
-#     Цена
-#     Диагональ экрана
-#     Ёмкость аккумултора
-#     Вес
+computers = []
+next_id = 1
 
 
-# 3) добавлять новые мобильные телефоны в список телефонов
-def input_phone_data():
-    print("введите данные телефона")
-
-    brand = input("марку: ")
-    model = input("модель: ")
-    weight = int(input("вес: "))
-    screen_diagonal = float(input("диагональ экрана: "))
-    battery = int(input("ёмкость акумулятора: "))
-    status = input("статус (подержанный, новый): ")
-    price = int(input("цену: "))
-    amount = int(input("количество на складе: "))
-
-    return MobilePhone(
-        0, brand, model, weight, screen_diagonal, battery, status, price, amount
-    )
-
-
-def add_phone_to_list(phones, phone):
-    global GLOBAL_MOBILE_PHONE_ID
-    GLOBAL_MOBILE_PHONE_ID += 1
-
-    phone.id = GLOBAL_MOBILE_PHONE_ID
-
-    phones.append(phone)
-
-
-# 4) удалять мобильные телефоны из списка телефонов
-
-def find_phone_index_by_id(phone, id)
-    for i in range(len(phones)):
-        if phones[i].id == id:
-            return i
-        
-        return -1
+def search_computers():
+    print("Поиск компьютеров:")
+    ram_min = int(input("Мин. ОЗУ (0 - не важно): ") or 0)
+    price_max = int(input("Макс. цена (0 - не важно): ") or 0)
     
-def delete_phone_by_id (phones, id)
-    delete_index = find_phone_index_by_id(phones, id)
-
-    if delete_index != -1:
-        return True
-    
-    return False
+    print("Результаты поиска:")
+    found = False
+    for comp in computers:
+        if ram_min > 0 and comp.ram < ram_min:
+            continue
+        if price_max > 0 and comp.price > price_max:
+            continue
         
+        print(f"ID {comp.id}: {comp.manufacturer}, {comp.processor}, ОЗУ: {comp.ram}ГБ, Цена: {comp.price}руб.")
+        found = True
+    
+    if not found:
+        print("Компьютеры не найдены")
 
 
-# 5) изменить поле "Количество на складе" в сущности мобильный телефон
+def sort_computers():
+    print("Сортировка:")
+    print("1 - по цене (дешевые сверху)")
+    print("2 - по цене (дорогие сверху)")
+    print("3 - по сумме ОЗУ+SSD")
+    
+    choice = input("Выберите: ")
+    
+    if choice == "1":
+        for i in range(len(computers)):
+            for j in range(i+1, len(computers)):
+                if computers[j].price < computers[i].price:
+                    computers[i], computers[j] = computers[j], computers[i]
+    elif choice == "2":
+        for i in range(len(computers)):
+            for j in range(i+1, len(computers)):
+                if computers[j].price > computers[i].price:
+                    computers[i], computers[j] = computers[j], computers[i]
+    elif choice == "3":
+        for i in range(len(computers)):
+            for j in range(i+1, len(computers)):
+                sum_i = computers[i].ram + computers[i].ssd
+                sum_j = computers[j].ram + computers[j].ssd
+                if sum_j > sum_i:
+                    computers[i], computers[j] = computers[j], computers[i]
+    else:
+        print("Отмена")
+        return
+    
+    print("Отсортированный список:")
+    for comp in computers:
+        print(f"ID {comp.id}: {comp.price}руб., ОЗУ: {comp.ram}ГБ, SSD: {comp.ssd}ГБ")
 
-# 6) изменить всю информацию о мобильном телефоне, кроме поля ИД, предварительно найдя его по ИД
+
+def add_computer():
+    global next_id
+    
+    print("Добавление компьютера:")
+    manufacturer = input("Производитель: ")
+    processor = input("Процессор: ")
+    video_card = input("Видеокарта: ")
+    ram = int(input("ОЗУ (ГБ): "))
+    ssd = int(input("SSD (ГБ): "))
+    weight = int(input("Вес: "))
+    price = int(input("Цена: "))
+    amount = int(input("Количество: "))
+    
+    computer = Computer(next_id, manufacturer, processor, video_card, ram, ssd, weight, price, amount)
+    computers.append(computer)
+    next_id += 1
+    print(f"Добавлен компьютер ID {computer.id}")
 
 
-# 7) вывести список всех мобильных телефонов
-def print_phones(phones):
-    print(
-        f"{'ИД':<4}{'Марка':<11}{'Модель':<16}{'Вес':<5}{'Диаг(inch)':<11}{'Аккум(мАч)':<11}{'Состояние':<10}{'Цена(руб)':<12}{'В наличии':<9}"
-    )
+def delete_computer():
+    print("Удаление:")
+    choice = input("Удалить по ID? (да/нет): ")
+    
+    if choice.lower() == "да":
+        id_to_delete = int(input("Введите ID: "))
+        for i in range(len(computers)):
+            if computers[i].id == id_to_delete:
+                # Вместо pop(i) - создаем новый список без этого элемента
+                new_computers = []
+                for j in range(len(computers)):
+                    if j != i:
+                        new_computers.append(computers[j])
+                computers.clear()
+                for comp in new_computers:
+                    computers.append(comp)
+                print(f"Удален компьютер ID {id_to_delete}")
+                return
+    else:
+        print("Список компьютеров:")
+        for i in range(len(computers)):
+            print(f"{i+1}. ID {computers[i].id}: {computers[i].manufacturer} {computers[i].processor}")
+        
+        index = int(input("Введите номер для удаления: ")) - 1
+        if index >= 0 and index < len(computers):
+            deleted_id = computers[index].id
+            new_computers = []
+            for i in range(len(computers)):
+                if i != index:
+                    new_computers.append(computers[i])
+            computers.clear()
+            for comp in new_computers:
+                computers.append(comp)
+            print(f"Удален компьютер ID {deleted_id}")
+            return
+    
+    print("Компьютер не найден")
 
-    for item in phones:
-        print(
-            f"{item.id:<4}{item.brand:<11}{item.model:<16}{item.weight:<5}{item.screen_diagonal:<11.1f}{item.battery:<11}{item.status:<10}{item.price:<12}{item.amount:<9}"
-        )
+
+def increase_ram():
+    comp_id = int(input("Введите ID компьютера: "))
+    add_ram = int(input("Сколько ГБ добавить: "))
+    
+    for comp in computers:
+        if comp.id == comp_id:
+            comp.ram += add_ram
+            print(f"ОЗУ увеличено до {comp.ram} ГБ")
+            return
+    
+    print("Компьютер не найден")
 
 
-# 8) вывести мобильный телефон по ИД
+def show_all():
+    print("Все компьютеры:")
+    if not computers:
+        print("Список пуст")
+        return
+    
+    for comp in computers:
+        print(f"ID {comp.id}: {comp.manufacturer} {comp.processor}, ОЗУ: {comp.ram}ГБ, SSD: {comp.ssd}ГБ, Цена: {comp.price}руб., В наличии: {comp.amount}шт.")
 
-def print_phone_by_id
 
-# 9) сохранить список мобильных телефонов в текстовый файл, в двух вариантах
-#     для удобного чтения человеком
-#     для последующей удобной загрузки компьютером в эту программу (по одному полю на строку)
 
-# 10) загрузить список мобильных телефонов из текстового файла
 
-phones = []
+while True:
+    print("УПРАВЛЕНИЕ КОМПЬЮТЕРАМИ")
+    print("1. Поиск компьютеров")
+    print("2. Сортировка")
+    print("3. Добавить компьютер")
+    print("4. Удалить компьютер")
+    print("5. Увеличить ОЗУ")
+    print("6. Показать все")
+    print("0. Выход")
+    
+    choice = input("Выберите: ")
+    
+    if choice == "1":
+        search_computers()
+    elif choice == "2":
+        sort_computers()
+    elif choice == "3":
+        add_computer()
+    elif choice == "4":
+        delete_computer()
+    elif choice == "5":
+        increase_ram()
+    elif choice == "6":
+        show_all()
+    elif choice == "0":
+        print("Выход")
+        break
+    else:
+        print("Неверный выбор")
 
-# add_phone_to_list(phones, input_phone_data())
-# add_phone_to_list(phones, input_phone_data())
 
-add_phone_to_list(
-    phones, MobilePhone(1, "brand1", "model1", 10, 3.4, 228, "status1", 123, 10)
-)
-add_phone_to_list(
-    phones, MobilePhone(2, "brand2", "model2", 10, 3, 228, "status2", 123, 10)
-)
-
-print_phones(phones)
+computers.append(Computer(1, "Dell", "Intel i5", "GTX 1650", 8, 512, 2000, 50000, 5))
+computers.append(Computer(2, "HP", "AMD Ryzen 7", "RTX 3060", 16, 1000, 2500, 120000, 3))
+next_id = 3
