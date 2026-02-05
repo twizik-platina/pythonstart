@@ -136,8 +136,64 @@ def show_all():
     for comp in computers:
         print(f"ID {comp.id}: {comp.manufacturer} {comp.processor}, ОЗУ: {comp.ram}ГБ, SSD: {comp.ssd}ГБ, Цена: {comp.price}руб., В наличии: {comp.amount}шт.")
 
+def set_sale():
+    comp_id = int(input("Введите ID компьютера: "))
+    
+    for comp in computers:
+        if comp.id == comp_id:
+            comp.price = int(comp.price*0.9)
+            print(f"Цена со скидкой составляет {comp.price} рублей")
+            return
+    
+    print("Компьютер не найден")
 
+def min_max_price():
+    min=10**9
+    max=0
+    max_index=0
+    min_index=0
+    for i in range(len(computers)):
+        if computers[i].price>max:
+            max=computers[i].price
+            max_index=i
+        if computers[i].price<min:
+            min=computers[i].price
+            min_index=i
+    print("Самый дешевый: ")
+    print_comp(min_index)
+    print("Самый дорогой: ")
+    print_comp(max_index)
 
+def sort_videocard(card_name2):
+    num_card_name1=""
+    num_card_name2=""
+    for j in range(len(card_name2)):
+        if card_name2[j].isdigit():
+            num_card_name2+=card_name2[j]
+
+    for i in range(len(computers)):
+        for j in range(len(computers[i].video_card)):
+            if computers[i].video_card[j].isdigit():
+                num_card_name1+=computers[i].video_card[j]
+        if int(num_card_name2)>int(num_card_name1):
+            continue
+        print_comp(i)
+
+def print_comp(index):
+    print(f"ID: {computers[index].id}")
+    print(f"Производитель: {computers[index].manufacturer}")
+    print(f"Процессор: {computers[index].processor}")
+    print(f"Видео карта: {computers[index].video_card}")
+    print(f"ОЗУ: {computers[index].ram}")
+    print(f"Вес ссд накопителя: {computers[index].ssd}")
+    print(f"Вес: {computers[index].weight}")
+    print(f"Цена: {computers[index].price}")
+    print(f"Кол-во на складе: {computers[index].amount}")
+
+    
+
+computers.append(Computer(1, "Dell", "Intel i5", "GTX 1650", 8, 512, 2000, 50000, 5))
+computers.append(Computer(2, "HP", "AMD Ryzen 7", "RTX 3060", 16, 1000, 2500, 120000, 3))
 
 while True:
     print("УПРАВЛЕНИЕ КОМПЬЮТЕРАМИ")
@@ -147,29 +203,46 @@ while True:
     print("4. Удалить компьютер")
     print("5. Увеличить ОЗУ")
     print("6. Показать все")
+    print("7. Выставить на распродажу (10%)")
+    print("8. Вывести самый дорогой и самый дешевый")
+    print("9. Сортировка по видеокарте (NVidia)")
     print("0. Выход")
     
     choice = input("Выберите: ")
     
     if choice == "1":
         search_computers()
+        input()
     elif choice == "2":
         sort_computers()
+        input()
     elif choice == "3":
         add_computer()
+        input()
     elif choice == "4":
         delete_computer()
+        input()
     elif choice == "5":
         increase_ram()
+        input()
     elif choice == "6":
         show_all()
+        input()
+    elif choice == "7":
+        set_sale()
+        input()
+    elif choice == "8":
+        min_max_price()
+        input()
+    elif choice == "9":
+        card_name=input("Введите минимальную видеокарту:")
+        sort_videocard(card_name)
+        input()
     elif choice == "0":
         print("Выход")
         break
     else:
         print("Неверный выбор")
+        input()
 
-
-computers.append(Computer(1, "Dell", "Intel i5", "GTX 1650", 8, 512, 2000, 50000, 5))
-computers.append(Computer(2, "HP", "AMD Ryzen 7", "RTX 3060", 16, 1000, 2500, 120000, 3))
 next_id = 3
