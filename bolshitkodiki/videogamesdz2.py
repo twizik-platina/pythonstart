@@ -1,3 +1,4 @@
+
 from dataclasses import dataclass
 
 @dataclass
@@ -112,71 +113,56 @@ def sort_games(games_list):
     
     return games_list
 
-def change_price_by_genre(genre, new_sale):
-    # Убираем знак процента и преобразуем в число
-    discount = int(new_sale.replace('%', '')) / 100
+def change_price_by_genre(genre,new_sale):
     for i in range(len(games)):
-        if games[i].genre == genre:
-            games[i].price = int(games[i].price * (1 - discount))
-    print(f"Цены на игры жанра {genre} изменены со скидкой {new_sale}")
+        if games[i].genre==genre:
+            games[i].price*=(int(new_sale[:-1])/100)
 
 def find_average_price():
-    if not games:  # Проверка на пустой список
-        return 0
-    summ = 0
+    k=0
+    summ=0
+
     for i in range(len(games)):
-        summ += games[i].price
-    return summ / len(games)
+        summ+=games[i].price
+        k+=1
+    return summ/k
 
 def find_max_player_rating():
-    if not games:  # Проверка на пустой список
-        return None
-    max_game = games[0]
-    for i in range(1, len(games)):
-        if max_game.player_rating < games[i].player_rating:
-            max_game = games[i]
-    return max_game
+    max=games[0].player_rating
+    for i in range(len(games)):
+        if max<games[i].player_rating:
+            max=games[i].player_rating
+            game=games[i]
+    return game
 
 def set_hit_flag():
     for i in range(len(games)):
         if games[i].player_rating >= 8.5:
-            games[i].status = "hit"
-    print("Статус 'хит' присвоен играм с рейтингом >= 8.5")
+            games[i].status="hit"
 
 def del_null_copies_games():
-    # Создаем новый список, так как нельзя удалять элементы во время итерации
-    global games
-    games = [game for game in games if game.copies != 0]
-    print("Игры с нулевым количеством копий удалены")
+    for i in range(len(games)):
+        if games[i].copies==0:
+            games.pop(i)
 
 def count_number_copies():
-    num = 0
     for i in range(len(games)):
-        num += games[i].copies
+        num+=games[i].copies
     return num
 
 def sort_games_by_price(game_price):
-    game_price = int(game_price)
-    found = False
-    for game in games:
-        if game.price < game_price:
-            print(f"ID {game.id}: {game.title} - {game.price}руб.")
-            found = True
-    if not found:
-        print("Игры дешевле указанной суммы не найдены")
-
-def increase_age_rating_by_id(game_id, new_age_rating):
-    game_id = int(game_id)
-    new_age_rating = int(new_age_rating)
     for i in range(len(games)):
-        if games[i].id == game_id:
-            games[i].age_rating = new_age_rating
-            print(f"Возрастной рейтинг игры {games[i].title} изменен на {new_age_rating}+")
-            return
-    print(f"Игра с ID {game_id} не найдена")
+        if games[i].price<game_price:
+            print(games[i])
+
+def increase_age_rating_by_id(game_id,new_age_rating):
+    for i in range(len(games)):
+        if games[i].id==game_id:
+            games[i].age_rating=new_age_rating
+            break
 
 def get_unique_genres():
-    genres = []
+    genres=[]
     for i in range(len(games)):
         if games[i].genre not in genres:
             genres.append(games[i].genre)
@@ -184,7 +170,7 @@ def get_unique_genres():
 
 def check_hit_status():
     for i in range(len(games)):
-        if games[i].status == "hit":
+        if games[i].status=="hit":
             return True
     return False
 
@@ -204,10 +190,10 @@ def add_game_to_list():
     game = Game(next_id, name, genre, platform, age_rating, price, player_rating, status, amount)
     games.append(game)
     next_id += 1
-    print(f"Добавлена игра ID {game.id}")
+    print(f"Добавлен компьютер ID {game.id}")
 
 while True:
-    print("\nУПРАВЛЕНИЕ ИГРАМИ")
+    print("УПРАВЛЕНИЕ ИГРАМИ")
     print("1. поиск игр по части названия (подстрока)")
     print("2. фильтрация игр")
     print("3. сортировка игр")
@@ -227,68 +213,55 @@ while True:
     choice = input("Выберите: ")
     
     if choice == "1":
-        search_games(games)
-        input("Нажмите Enter для продолжения...")
+        search_games()
+        input()
     elif choice == "2":
-        filter_games(games)
-        input("Нажмите Enter для продолжения...")
+        filter_games()
+        input()
     elif choice == "3":
-        sort_games(games)
-        input("Нажмите Enter для продолжения...")
+        sort_games()
+        input()
     elif choice == "4":
-        genre = input("Введите жанр игры: ")
-        discount = input("Введите скидку (например, 20%): ")
-        change_price_by_genre(genre, discount)
-        input("Нажмите Enter для продолжения...")
+        change_price_by_genre(input("Введите жанр игры: "),input("Введите скидку: "))
+        input()
     elif choice == "5":
-        print(f"Средняя цена: {find_average_price():.2f} руб.")
-        input("Нажмите Enter для продолжения...")
+        print(f"Средняя цена: {find_average_price()}")
+        input()
     elif choice == "6":
-        best_game = find_max_player_rating()
-        if best_game:
-            print(f"Игра с максимальной оценкой: ID {best_game.id}: {best_game.title} - {best_game.player_rating}")
-        else:
-            print("Список игр пуст")
-        input("Нажмите Enter для продолжения...")
+        print(find_max_player_rating())
+        input()
     elif choice == "7":
         set_hit_flag()
-        input("Нажмите Enter для продолжения...")
+        input()
     elif choice == "8":
         del_null_copies_games()
-        input("Нажмите Enter для продолжения...")
+        input()
     elif choice == "9":
-        print(f"Общее количество копий: {count_number_copies()}")
-        input("Нажмите Enter для продолжения...")
+        print(count_number_copies())
+        input()
     elif choice == "10":
-        price = input("Введите цену: ")
-        sort_games_by_price(price)
-        input("Нажмите Enter для продолжения...")
+        sort_games_by_price(input("Введите цену: "))
+        input()
     elif choice == "11":
-        game_id = input("Введите id: ")
-        new_rating = input("Введите новый возрастной рейтинг: ")
-        increase_age_rating_by_id(game_id, new_rating)
-        input("Нажмите Enter для продолжения...")
+        increase_age_rating_by_id(input("Введите id: "),input("Введите новую цену: "))
+        input()
     elif choice == "12":
-        unique_genres = get_unique_genres()
-        if unique_genres:
-            print("Уникальные жанры:", ", ".join(unique_genres))
-        else:
-            print("Список игр пуст")
-        input("Нажмите Enter для продолжения...")
+        print(get_unique_genres())
+        input()
     elif choice == "13":
-        if check_hit_status():
-            print("В списке есть игры с хитовым статусом")
+        if check_hit_status() == True:
+            print("В списке есть игры с хит статусом")
         else:
-            print("В списке нет игр с хитовым статусом")
-        input("Нажмите Enter для продолжения...")
+            print("В списке нет игры с хит статусом")
+        input()
     elif choice == "14":
         add_game_to_list()
-        input("Нажмите Enter для продолжения...")
     elif choice == "0":
         print("Выход")
         break
     else:
         print("Неверный выбор")
-        input("Нажмите Enter для продолжения...")
+        input()
+
 
         
