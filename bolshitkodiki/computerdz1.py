@@ -15,6 +15,69 @@ class Computer:
 computers = []
 next_id = 1
 
+def save_to_txt_for_human(filename):
+
+    try:
+        file_out = open(filename, "w", encoding="utf-8")
+        file_out.write(
+            f"{'ИД':<5}{'Производитель':<15}{'Процессор':<20}{'Видеокарта':<15}{'ОЗУ(ГБ)':<8}{'SSD(ГБ)':<8}{'Вес(г)':<8}{'Цена(руб)':<12}{'В наличии':<10}\n"
+        )
+        
+        for item in computers:
+            file_out.write(
+                f"{item.id:<5}{item.manufacturer:<15}{item.processor:<20}{item.video_card:<15}{item.ram:<8}{item.ssd:<8}{item.weight:<8}{item.price:<12}{item.amount:<10}\n"
+            )
+        file_out.close()
+        print(f"Сохранено в {filename}")
+    except:
+        print(f"Ошибка сохранения")
+
+def save_to_txt_for_computer(filename):
+
+    try:
+        file_out = open(filename, "w", encoding="utf-8")
+        global next_id
+        file_out.write(f"{next_id}\n")
+        file_out.write(f"{len(computers)}\n")
+
+        for item in computers:
+            file_out.write(
+                f"{item.id}\n{item.manufacturer}\n{item.processor}\n{item.video_card}\n{item.ram}\n{item.ssd}\n{item.weight}\n{item.price}\n{item.amount}\n"
+            )
+        file_out.close()
+        print(f"Сохранено в {filename}")
+    except:
+        print(f"Ошибка сохранения")
+
+def load_from_txt_for_computer(filename):
+
+    try:
+        file_in = open(filename, "r", encoding="utf-8")
+        global next_id
+        global computers
+        
+        next_id = int(file_in.readline())
+        count = int(file_in.readline())
+        
+        loaded = []
+        for _ in range(count):
+            id = int(file_in.readline())
+            manufacturer = file_in.readline().strip()
+            processor = file_in.readline().strip()
+            video_card = file_in.readline().strip()
+            ram = int(file_in.readline())
+            ssd = int(file_in.readline())
+            weight = int(file_in.readline())
+            price = int(file_in.readline())
+            amount = int(file_in.readline())
+            
+            loaded.append(Computer(id, manufacturer, processor, video_card, ram, ssd, weight, price, amount))
+        
+        computers = loaded
+        file_in.close()
+        print(f"Загружено из {filename}")
+    except:
+        print(f"Ошибка загрузки")
 
 def search_computers():
     print("Поиск компьютеров:")
@@ -148,6 +211,10 @@ def set_sale():
     print("Компьютер не найден")
 
 def min_max_price():
+    if not computers:
+        print("Список компьютеров пуст")
+        return
+        
     min=10**9
     max=0
     max_index=0
@@ -165,19 +232,28 @@ def min_max_price():
     print_comp(max_index)
 
 def sort_videocard(card_name2):
-    num_card_name1=""
     num_card_name2=""
     for j in range(len(card_name2)):
         if card_name2[j].isdigit():
             num_card_name2+=card_name2[j]
+    
+    if not num_card_name2:
+        print("В названии видеокарты не найдено цифр")
+        return
 
+    found = False
     for i in range(len(computers)):
+        num_card_name1=""
         for j in range(len(computers[i].video_card)):
             if computers[i].video_card[j].isdigit():
                 num_card_name1+=computers[i].video_card[j]
-        if int(num_card_name2)>int(num_card_name1):
-            continue
-        print_comp(i)
+        
+        if num_card_name1 and int(num_card_name2) <= int(num_card_name1):
+            print_comp(i)
+            found = True
+    
+    if not found:
+        print("Компьютеры с указанной или более мощной видеокартой не найдены")
 
 def print_comp(index):
     print(f"ID: {computers[index].id}")
@@ -190,10 +266,9 @@ def print_comp(index):
     print(f"Цена: {computers[index].price}")
     print(f"Кол-во на складе: {computers[index].amount}")
 
-    
-
 computers.append(Computer(1, "Dell", "Intel i5", "GTX 1650", 8, 512, 2000, 50000, 5))
 computers.append(Computer(2, "HP", "AMD Ryzen 7", "RTX 3060", 16, 1000, 2500, 120000, 3))
+next_id = 3
 
 while True:
     print("УПРАВЛЕНИЕ КОМПЬЮТЕРАМИ")
@@ -205,7 +280,10 @@ while True:
     print("6. Показать все")
     print("7. Выставить на распродажу (10%)")
     print("8. Вывести самый дорогой и самый дешевый")
-    print("9. Сортировка по видеокарте (NVidia)")
+    print("9. Сортировка по видеокарте")
+    print("10. Сохранить в человекочитаемый файл")
+    print("11. Сохранить в машиночитаемый файл")
+    print("12. Загрузить из машиночитаемого файла")
     print("0. Выход")
     
     choice = input("Выберите: ")
@@ -238,11 +316,21 @@ while True:
         card_name=input("Введите минимальную видеокарту:")
         sort_videocard(card_name)
         input()
+    elif choice == "10":
+        filename = input("Введите имя файла для сохранения (человекочитаемый): ")
+        save_to_txt_for_human(filename)
+        input()
+    elif choice == "11":
+        filename = input("Введите имя файла для сохранения (машиночитаемый): ")
+        save_to_txt_for_computer(filename)
+        input()
+    elif choice == "12":
+        filename = input("Введите имя файла для загрузки: ")
+        load_from_txt_for_computer(filename)
+        input()
     elif choice == "0":
         print("Выход")
         break
     else:
         print("Неверный выбор")
         input()
-
-next_id = 3
