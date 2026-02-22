@@ -87,13 +87,10 @@ def search_computers():
     print("Результаты поиска:")
     found = False
     for comp in computers:
-        if ram_min > 0 and comp.ram < ram_min:
-            continue
-        if price_max > 0 and comp.price > price_max:
-            continue
-        
-        print(f"ID {comp.id}: {comp.manufacturer}, {comp.processor}, ОЗУ: {comp.ram}ГБ, Цена: {comp.price}руб.")
-        found = True
+
+        if (ram_min == 0 or comp.ram >= ram_min) and (price_max == 0 or comp.price <= price_max):
+            print(f"ID {comp.id}: {comp.manufacturer}, {comp.processor}, ОЗУ: {comp.ram}ГБ, Цена: {comp.price}руб.")
+            found = True
     
     if not found:
         print("Компьютеры не найдены")
