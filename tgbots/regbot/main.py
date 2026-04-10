@@ -1,10 +1,10 @@
-import telebot
-import telebot.types
+#8772867401:AAFShxYDYOPHZO0CHCVxljouR33E9JyGx-I
 
-from datetime import datetime
 
-# 8741314074:AAGdFPuHf0DKEJWW8mKmDD804aqFMKbzWB0
+#start
+#cancel_reg
 
+# 7974872453:AAFQHoSf7MQyT_AwZV0kreyhIFi5gY6rob4
 
 # start
 # cancel_registration
